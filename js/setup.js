@@ -15,20 +15,24 @@ var getRandomValue = function (values) {
   return values[Math.floor(Math.random() * values.length)];
 };
 
-var genererateSimilarsObject = function (count) {
-  var similarsObjects = [];
-  for (var i = 0; i < count; i++) {
-    var similarsObject = {
+var getSimilarObject = function () {
+return {
       name: getRandomValue(randomSettings.NAME) + ' ' + getRandomValue(randomSettings.LAST_NAME),
       coatColor: getRandomValue(randomSettings.COAT_COLOR),
       eyesColor: getRandomValue(randomSettings.EYES_COLOR)
-    };
-    similarsObjects.push(similarsObject);
-  }
-  return similarsObjects;
+  };
 };
 
-var generateElement = function (similar) {
+var getSimilarsArray = function (count) {
+  var similarsArray = [];
+  for (var i = 0; i < count; i++) {
+    var similarObject = getSimilarObject();
+    similarsArray.push(similarObject);
+  }
+  return similarsArray;
+};
+
+var getSimilarElement = function (similar) {
   var newElement = templateSimilar.cloneNode(true);
   newElement.querySelector('.setup-similar-label').textContent = similar.name;
   newElement.querySelector('.wizard-coat').style.fill = similar.coatColor;
@@ -36,18 +40,18 @@ var generateElement = function (similar) {
   return newElement;
 };
 
-var generateSimilars = function () {
-  var similarsObjects = genererateSimilarsObject(SIMILAR_WIZARD_COUNT_ON_SETUP);
+var getSimilars = function () {
+  var similarsArray = getSimilarsArray(SIMILAR_WIZARD_COUNT_ON_SETUP);
   var mainElement = document.querySelector('.setup-similar-list');
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < similarsObjects.length; i++) {
-    var similarElement = generateElement(similarsObjects[i]);
+  for (var i = 0; i < similarsArray.length; i++) {
+    var similarElement = getSimilarElement(similarsArray[i]);
     fragment.appendChild(similarElement);
   }
   mainElement.appendChild(fragment);
 };
 
-var eraseHidden = function () {
+var eraseTagsClasses = function () {
   var element = document.querySelector('.setup-similar.hidden');
   element.classList.remove('hidden');
   element = document.querySelector('.overlay.setup.hidden');
@@ -55,8 +59,8 @@ var eraseHidden = function () {
 };
 
 var prepareSetup = function () {
-  eraseHidden();
-  generateSimilars();
+  eraseTagsClasses();
+  getSimilars();
 };
 
 prepareSetup();
