@@ -20,10 +20,10 @@ var getRandomValue = function (values) {
 };
 
 var getSimilarObject = function () {
-return {
-      name: getRandomValue(randomSettings.NAME) + ' ' + getRandomValue(randomSettings.LAST_NAME),
-      coatColor: getRandomValue(randomSettings.COAT_COLOR),
-      eyesColor: getRandomValue(randomSettings.EYES_COLOR)
+  return {
+    name: getRandomValue(randomSettings.NAME) + ' ' + getRandomValue(randomSettings.LAST_NAME),
+    coatColor: getRandomValue(randomSettings.COAT_COLOR),
+    eyesColor: getRandomValue(randomSettings.EYES_COLOR)
   };
 };
 
