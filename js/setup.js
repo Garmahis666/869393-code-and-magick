@@ -9,7 +9,11 @@ var randomSettings = {
   EYES_COLOR: ['black', 'red', 'blue', 'yellow', 'green']
 };
 
+
 var templateSimilar = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+var mainElement = document.querySelector('.setup-similar-list');
+var firstChangeTag = document.querySelector('.setup-similar.hidden');
+var secondChangeTag = document.querySelector('.overlay.setup.hidden');
 
 var getRandomValue = function (values) {
   return values[Math.floor(Math.random() * values.length)];
@@ -42,7 +46,6 @@ var getSimilarElement = function (similar) {
 
 var getSimilars = function () {
   var similarsArray = getSimilarsArray(SIMILAR_WIZARD_COUNT_ON_SETUP);
-  var mainElement = document.querySelector('.setup-similar-list');
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < similarsArray.length; i++) {
     var similarElement = getSimilarElement(similarsArray[i]);
@@ -52,10 +55,8 @@ var getSimilars = function () {
 };
 
 var eraseTagsClasses = function () {
-  var element = document.querySelector('.setup-similar.hidden');
-  element.classList.remove('hidden');
-  element = document.querySelector('.overlay.setup.hidden');
-  element.classList.remove('hidden');
+  firstChangeTag.classList.remove('hidden');
+  secondChangeTag.classList.remove('hidden');
 };
 
 var prepareSetup = function () {
