@@ -1,6 +1,8 @@
 'use strict';
 
 var SIMILAR_WIZARD_COUNT_ON_SETUP = 4;
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
 var randomSettings = {
   NAME: ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'],
@@ -12,8 +14,26 @@ var randomSettings = {
 
 var templateSimilar = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 var mainElement = document.querySelector('.setup-similar-list');
-var firstChangeTag = document.querySelector('.setup-similar.hidden');
-var secondChangeTag = document.querySelector('.overlay.setup.hidden');
+var setupWindow = document.querySelector('.setup');
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = setupWindow.querySelector('.setup-close');
+
+var onSetupWindowEscPress = function (evt) {
+  if (evt.key === ESC_KEYCODE) {
+    closeSetupWindow();
+  }
+};
+
+var openSetupWindow = function () {
+  setupWindow.classList.remove('hidden');
+  setupClose.addEventListener('click', closeSetupWindow);
+  document.addEventListener('keydown', onSetupWindowEscPress);
+};
+
+var closeSetupWindow = function () {
+  setupWindow.classList.add('hidden');
+  document.removeEventListener('keydown', onSetupWindowEscPress);
+};
 
 var getRandomValue = function (values) {
   return values[Math.floor(Math.random() * values.length)];
@@ -54,14 +74,14 @@ var getSimilars = function () {
   mainElement.appendChild(fragment);
 };
 
-var eraseTagsClasses = function () {
-  firstChangeTag.classList.remove('hidden');
-  secondChangeTag.classList.remove('hidden');
-};
-
 var prepareSetup = function () {
-  eraseTagsClasses();
   getSimilars();
+  setupOpen.addEventListener('click', openSetupWindow);
+  setupOpen.addEventListener('keydown', function (evt) {
+    if (evt.key === ENTER_KEYCODE) {
+      openSetupWindow();
+    }
+  });
 };
 
 prepareSetup();
