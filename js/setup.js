@@ -1,38 +1,78 @@
 'use strict';
 
 var SIMILAR_WIZARD_COUNT_ON_SETUP = 4;
-var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 'Escape';
+var ENTER_KEYCODE = 'Enter';
 
 var randomSettings = {
   NAME: ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'],
   LAST_NAME: ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'],
   COAT_COLOR: ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'],
-  EYES_COLOR: ['black', 'red', 'blue', 'yellow', 'green']
+  EYES_COLOR: ['black', 'red', 'blue', 'yellow', 'green'],
+  FIREBALL_COLOR: ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848']
 };
-
 
 var templateSimilar = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 var mainElement = document.querySelector('.setup-similar-list');
 var setupWindow = document.querySelector('.setup');
 var setupOpen = document.querySelector('.setup-open');
 var setupClose = setupWindow.querySelector('.setup-close');
+var userNameInput = setupWindow.querySelector('.setup-user-name');
+var wizardCoat = setupWindow.querySelector('.wizard-coat');
+var wizardEyes = setupWindow.querySelector('.wizard-eyes');
+var fireball = setupWindow.querySelector('.setup-fireball-wrap');
 
-var onSetupWindowEscPress = function (evt) {
-  if (evt.key === ESC_KEYCODE) {
-    closeSetupWindow();
+var onFireballClick = function (evt) {
+  alert(evt.target.nodeName);
+  if (evt.target.className.indexOf('fireball') > -1) {
+    var fireballColor = getRandomValue(randomSettings.FIREBALL_COLOR);
+    fireball.style.background = fireballColor;
+    fireball.querySelector('input[name=fireball-color]').value = fireballColor;
+  } else if (evt.target.className.indexOf('coat') > -1) {
+    evt.target.style.fill = getRandomValue(randomSettings.COAT_COLOR);
+  } else {
+    evt.target.style.fill = getRandomValue(randomSettings.EYES_COLOR);
   }
 };
 
 var openSetupWindow = function () {
   setupWindow.classList.remove('hidden');
   setupClose.addEventListener('click', closeSetupWindow);
-  document.addEventListener('keydown', onSetupWindowEscPress);
+  setupClose.addEventListener('keydown', onSetupCloseKeyPress);
+  document.addEventListener('keydown', onDocumentEscPress);
+  setupOpen.removeEventListener('click', openSetupWindow);
+  setupOpen.removeEventListener('keydown', onSetupOpenEnterPress);
+  fireball.addEventListener('click', onFireballClick);
+  wizardCoat.addEventListener('click', onFireballClick);
+  wizardEyes.addEventListener('click', onFireballClick);
 };
 
 var closeSetupWindow = function () {
   setupWindow.classList.add('hidden');
-  document.removeEventListener('keydown', onSetupWindowEscPress);
+  setupClose.removeEventListener('click', closeSetupWindow);
+  setupClose.removeEventListener('keydown', onSetupCloseKeyPress);
+  document.removeEventListener('keydown', onDocumentEscPress);
+  setupOpen.addEventListener('click', openSetupWindow);
+  setupOpen.addEventListener('keydown', onSetupOpenEnterPress);
+  fireball.removeEventListener('click', onFireballClick);
+};
+
+var onSetupCloseKeyPress = function (evt) {
+  if (evt.key === ENTER_KEYCODE) {
+    closeSetupWindow();
+  }
+};
+
+var onSetupOpenEnterPress = function (evt) {
+  if (evt.key === ENTER_KEYCODE) {
+    openSetupWindow();
+  }
+};
+
+var onDocumentEscPress = function (evt) {
+  if (evt.key === ESC_KEYCODE) {
+    closeSetupWindow();
+  }
 };
 
 var getRandomValue = function (values) {
@@ -77,11 +117,7 @@ var getSimilars = function () {
 var prepareSetup = function () {
   getSimilars();
   setupOpen.addEventListener('click', openSetupWindow);
-  setupOpen.addEventListener('keydown', function (evt) {
-    if (evt.key === ENTER_KEYCODE) {
-      openSetupWindow();
-    }
-  });
+  setupOpen.addEventListener('keydown', onSetupOpenEnterPress);
 };
 
 prepareSetup();
