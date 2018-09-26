@@ -3,6 +3,13 @@
 var SIMILAR_WIZARD_COUNT_ON_SETUP = 4;
 var ESC_KEYCODE = 'Escape';
 var ENTER_KEYCODE = 'Enter';
+var dragged = false;
+var startCoords = {
+  x: 0,
+  xStart: 0,
+  y: 0,
+  yStart: 0
+};
 
 var randomSettings = {
   NAME: ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'],
@@ -24,7 +31,7 @@ var wizardEyes = setupWindow.querySelector('.wizard-eyes');
 var wizardEyesInput = document.querySelector('input[name=eyes-color]');
 var fireball = setupWindow.querySelector('.setup-fireball-wrap');
 var fireballInput = fireball.querySelector('input[name=fireball-color]');
-var setupUserPic = setupWindow.querySelector('.setup-user-pic');
+var setupUserPic = setupWindow.querySelector('.upload');
 
 var changeFireballColor = function () {
   var fireballColor = getRandomValue(randomSettings.FIREBALL_COLOR);
@@ -54,6 +61,54 @@ var onChangeColorClick = function (evt) {
   }
 };
 
+var onSetupUserPicMouseMove = function (evt) {
+  evt.preventDefault();
+  var shift = {
+    x: startCoords.x - evt.clientX,
+    y: startCoords.y - evt.clientY
+  };
+  if (shift.x > 5 || shift.y > 5) {
+    dragged = true;
+  }
+  startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  setupWindow.style.top = (setupWindow.offsetTop - shift.y) + 'px';
+  setupWindow.style.left = (setupWindow.offsetLeft - shift.x) + 'px';
+};
+
+var onSetupUserPicMouseUp = function (evt) {
+  evt.preventDefault();
+  if (!dragged) {
+    var onClickPreventDefault = function (evt) {
+      evt.preventDefault();
+      setupUserPic.removeEventListener('click', onClickPreventDefault);
+    };
+    setupUserPic.addEventListener('click', onClickPreventDefault);
+  }
+  document.removeEventListener('mousemove', onSetupUserPicMouseMove);
+  document.removeEventListener('mouseup', onSetupUserPicMouseUp);
+  setupUserPic.addEventListener('mousedown', onSetupUserPicMouseDown);
+  dragged = false;
+};
+
+var onSetupUserPicMouseDown = function (evt) {
+  evt.preventDefault();
+  startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+  if (startCoords.xStart === 0 && startCoords.yStart === 0) {
+    startCoords.xStart = evt.clientX;
+    startCoords.yStart = evt.clientY;
+  }
+  document.addEventListener('mousemove', onSetupUserPicMouseMove);
+  document.addEventListener('mouseup', onSetupUserPicMouseUp);
+  setupUserPic.removeEventListener('mousedown', onSetupUserPicMouseDown);
+};
+
 var onUserNameFocus = function () {
   document.removeEventListener('keydown', onDocumentEscPress);
   userNameInput.addEventListener('blur', onUserNameBlur);
@@ -77,7 +132,11 @@ var openSetupWindow = function () {
   wizardCoat.addEventListener('click', onChangeColorClick);
   wizardEyes.addEventListener('click', onChangeColorClick);
   userNameInput.addEventListener('focus', onUserNameFocus);
-  setupUserPic.addEventListener('');
+  setupUserPic.addEventListener('mousedown', onSetupUserPicMouseDown);
+  if (startCoords.xStart !== 0 && startCoords.yStart !== 0) {
+    setupWindow.style.top = (setupWindow.offsetTop - startCoords.yStart) + 'px';
+    setupWindow.style.left = (setupWindow.offsetLeft - startCoords.xStart) + 'px';
+  }
 };
 
 var closeSetupWindow = function () {
@@ -91,6 +150,7 @@ var closeSetupWindow = function () {
   wizardCoat.removeEventListener('click', onChangeColorClick);
   wizardEyes.removeEventListener('click', onChangeColorClick);
   userNameInput.removeEventListener('focus', onUserNameFocus);
+  setupUserPic.removeEventListener('mousedown', onSetupUserPicMouseDown);
 };
 
 var onSetupCloseKeyPress = function (evt) {
