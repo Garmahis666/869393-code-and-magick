@@ -24,6 +24,7 @@ var wizardEyes = setupWindow.querySelector('.wizard-eyes');
 var wizardEyesInput = document.querySelector('input[name=eyes-color]');
 var fireball = setupWindow.querySelector('.setup-fireball-wrap');
 var fireballInput = fireball.querySelector('input[name=fireball-color]');
+var setupUserPic = setupWindow.querySelector('.setup-user-pic');
 
 var changeFireballColor = function () {
   var fireballColor = getRandomValue(randomSettings.FIREBALL_COLOR);
@@ -76,6 +77,7 @@ var openSetupWindow = function () {
   wizardCoat.addEventListener('click', onChangeColorClick);
   wizardEyes.addEventListener('click', onChangeColorClick);
   userNameInput.addEventListener('focus', onUserNameFocus);
+  setupUserPic.addEventListener('');
 };
 
 var closeSetupWindow = function () {
