@@ -70,10 +70,8 @@ var onSetupUserPicMouseMove = function (evt) {
   if (shift.x > 5 || shift.y > 5) {
     dragged = true;
   }
-  startCoords = {
-    x: evt.clientX,
-    y: evt.clientY
-  };
+  startCoords.x = evt.clientX;
+  startCoords.y = evt.clientY;
 
   setupWindow.style.top = (setupWindow.offsetTop - shift.y) + 'px';
   setupWindow.style.left = (setupWindow.offsetLeft - shift.x) + 'px';
@@ -81,9 +79,9 @@ var onSetupUserPicMouseMove = function (evt) {
 
 var onSetupUserPicMouseUp = function (evt) {
   evt.preventDefault();
-  if (!dragged) {
-    var onClickPreventDefault = function (evt) {
-      evt.preventDefault();
+  if (dragged) {
+    var onClickPreventDefault = function (evtClick) {
+      evtClick.preventDefault();
       setupUserPic.removeEventListener('click', onClickPreventDefault);
     };
     setupUserPic.addEventListener('click', onClickPreventDefault);
@@ -96,13 +94,11 @@ var onSetupUserPicMouseUp = function (evt) {
 
 var onSetupUserPicMouseDown = function (evt) {
   evt.preventDefault();
-  startCoords = {
-    x: evt.clientX,
-    y: evt.clientY
-  };
+  startCoords.x = evt.clientX;
+  startCoords.y = evt.clientY;
   if (startCoords.xStart === 0 && startCoords.yStart === 0) {
-    startCoords.xStart = evt.clientX;
-    startCoords.yStart = evt.clientY;
+    startCoords.xStart = setupWindow.style.left;
+    startCoords.yStart = setupWindow.style.top;
   }
   document.addEventListener('mousemove', onSetupUserPicMouseMove);
   document.addEventListener('mouseup', onSetupUserPicMouseUp);
@@ -134,8 +130,8 @@ var openSetupWindow = function () {
   userNameInput.addEventListener('focus', onUserNameFocus);
   setupUserPic.addEventListener('mousedown', onSetupUserPicMouseDown);
   if (startCoords.xStart !== 0 && startCoords.yStart !== 0) {
-    setupWindow.style.top = (setupWindow.offsetTop - startCoords.yStart) + 'px';
-    setupWindow.style.left = (setupWindow.offsetLeft - startCoords.xStart) + 'px';
+    setupWindow.style.top = startCoords.yStart;
+    setupWindow.style.left = startCoords.xStart;
   }
 };
 
