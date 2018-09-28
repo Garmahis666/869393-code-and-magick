@@ -67,7 +67,7 @@ var onSetupUserPicMouseMove = function (evt) {
     x: startCoords.x - evt.clientX,
     y: startCoords.y - evt.clientY
   };
-  if (shift.x > 5 || shift.y > 5) {
+  if (Math.abs(shift.x) + Math.abs(shift.y) > 3) {
     dragged = true;
   }
   startCoords.x = evt.clientX;
@@ -96,7 +96,7 @@ var onSetupUserPicMouseDown = function (evt) {
   evt.preventDefault();
   startCoords.x = evt.clientX;
   startCoords.y = evt.clientY;
-  if (startCoords.xStart === 0 && startCoords.yStart === 0) {
+  if (!(startCoords.xStart + startCoords.yStart)) {
     startCoords.xStart = setupWindow.style.left;
     startCoords.yStart = setupWindow.style.top;
   }
